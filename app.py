@@ -15,7 +15,7 @@ import os
 from dotenv import load_dotenv
 from tensorflow.keras.applications import VGG16, ResNet101
 
-# Add this near the top of your file, after the imports
+# Initialize session state
 def initialize_session_state():
     if 'model_predictions' not in st.session_state:
         st.session_state.model_predictions = {
@@ -41,7 +41,7 @@ def create_radar_chart(vital_params_normal, vital_params_tumorous, tumor_type):
         marker=dict(size=8, symbol='circle')
     ))
 
-    # Set color based on tumor type
+    # Setting color based on tumor type
     color_map = {
         'Glioma': 'red',
         'Meningioma': 'pink',
@@ -92,7 +92,7 @@ def create_radar_chart(vital_params_normal, vital_params_tumorous, tumor_type):
 
     return fig
 
-# Streamlit button to show health analysis
+# Health analysis button to show vital parameters comparison
 def show_health_analysis_button(model_prediction):
     if st.button('Show Health Analysis'):
         # Example vital parameters for demonstration
@@ -150,7 +150,7 @@ def show_health_analysis_button(model_prediction):
             f"{model_prediction} Tumorous Individual": list(vital_params_tumorous[model_prediction].values())
         })
 
-# Streamlit button to show model comparison
+# Model comparison button to show model comparison
 
 def show_model_comparison_button():
     if st.button('Show Model Comparison'):
@@ -164,7 +164,7 @@ def show_model_comparison_button():
             st.warning("No models have been used for prediction yet.")
             return
             
-        # Create a bar chart for model comparison
+        # bar chart for model comparison
         fig = go.Figure()
         
         for model, accuracy in valid_predictions.items():
@@ -187,7 +187,7 @@ def show_model_comparison_button():
         
         st.plotly_chart(fig)
         
-        # Add a comparison table
+        # Comparison table
         st.write("### Model Comparison Table")
         comparison_data = {
             "Model": list(valid_predictions.keys()),
@@ -243,10 +243,10 @@ def generate_saliency_map(model, img_array, class_index, img_size):
     gradients = tf.reduce_max(gradients, axis=-1)
     gradients = gradients.numpy().squeeze()
 
-    # Resize gradients to match original image size
+    # Resizing gradients to match original image size
     gradients = cv2.resize(gradients, img_size)
 
-    # Create a circular mask for the brain area
+    # Creating a circular mask for the brain area
     center = (gradients.shape[0] // 2, gradients.shape[1] // 2)
     radius = min(center[0], center[1]) - 10
     y, x = np.ogrid[:gradients.shape[0], :gradients.shape[1]]
